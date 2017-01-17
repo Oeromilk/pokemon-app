@@ -1,0 +1,12 @@
+// Import materialize css components
+@import '../../node_modules/materialize-css/bin/materialize.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
