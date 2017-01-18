@@ -10,11 +10,11 @@ var PokemonContainer = require('./components/pokemon.jsx').PokemonContainer;
 var AppRouter = Backbone.Router.extend({
   routes: {
     '': 'index',
-    'pokemon/': 'pokemon'
+    'pokemon/:pokemonId/': 'pokemon'
   },
-  index: function(){
+  index: function(pokemonId){
     ReactDom.render(
-      React.createElement(LandingContainer),
+      React.createElement(LandingContainer, {router: this, pokemonId: pokemonId}),
       document.getElementById('app')
     );
   },

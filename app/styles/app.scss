@@ -1,6 +1,8 @@
 // Import materialize css components
 @import '../../node_modules/materialize-css/bin/materialize.css';
 
+// #2B71B7 #FFCB05
+
 *,
 *::before,
 *::after {
@@ -9,4 +11,8 @@
 
 img {
   max-width: 100%;
+}
+
+#rounded-border {
+  border-radius: 5px;
 }

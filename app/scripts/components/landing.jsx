@@ -7,15 +7,15 @@ var Template = require('./templates/navbar.jsx').Template;
 var PokemonCollection = require('../models/pokemon.js').PokemonCollection;
 
 var PokemonListing = React.createClass({
-  logInfo: function(url){
-    console.log(url);
+  logInfo: function(pokemon){
+    localStorage.setItem('pokemonInfo', JSON.stringify(pokemon));
   },
   render: function(){
     var pokemon = this.props.pokemon;
 
     var pokemonList = pokemon.map(pokemon => {
       return (
-        <a onClick={() => {this.logInfo(pokemon.url)}} key={pokemon.name} className="collection-item">{pokemon.name}</a>
+        <a onClick={() => {this.logInfo(pokemon)}} key={pokemon.name} href={`#pokemon/${pokemon.name}/`} className="collection-item">{pokemon.name}</a>
       )
     });
     return (
@@ -34,22 +34,56 @@ var LandingContainer = React.createClass({
       pokemon: []
     }
   },
-  loadPokemon: function(e){
+  loadPokemon: function(newUrl){
     var self = this;
     const url = `${this.state.url}pokemon/`;
-    $.ajax(url).then(function(response){
-      if(response){
-        $('#loadButton').hide();
-        $('#pokemonList').show();
-      }
-      self.setState({response: response});
-      self.setState({pokemon: response.results});
-    });
+    $('.progress').show();
+    $('#loadButton').hide();
+    if (newUrl){
+      $.ajax(newUrl).then(function(response){
+        if(response){
+          $('.progress').hide();
+          $('#pokemonList').show();
+          $('#prevButton').show();
+          $('#nextButton').show();
+        }
+        if (response.previous === null){
+          $('#prevButton').addClass('disabled');
+        }
+        if (response.next === null){
+          $('#nextButton').addClass('disabled');
+        }
+        self.setState({response: response});
+        self.setState({pokemon: response.results});
+      });
+    } else {
+      $.ajax(url).then(function(response){
+        if(response){
+          $('.progress').hide();
+          $('#pokemonList').show();
+          $('#prevButton').show();
+          $('#nextButton').show();
+        }
+        if (response.previous === null){
+          $('#prevButton').addClass('disabled');
+        }
+        if (response.next === null){
+          $('#nextButton').addClass('disabled');
+        }
+        self.setState({response: response});
+        self.setState({pokemon: response.results});
+      });
+    }
+
   },
   componentDidMount: function(){
+    $('#prevButton').hide();
+    $('#nextButton').hide();
+    $('.progress').hide();
     $('#pokemonList').hide();
   },
   render: function(){
+    var next = this.state.response.next;
     return (
       <Template>
         <div className="container">
@@ -61,15 +95,18 @@ var LandingContainer = React.createClass({
           </div>
           <div className="row">
             <div className="col m6 offset-m3 center-align">
-              <a onClick={this.loadPokemon} id="loadButton" className="waves-effect waves-light btn-large">Pokemon</a>
+              <a onClick={() => {this.loadPokemon()}} id="loadButton" className="waves-effect waves-light btn-large">Pokemon</a>
+                <div className="progress blue darken-4">
+                  <div className="indeterminate amber lighten-1"></div>
+                </div>
               <PokemonListing pokemon={this.state.pokemon}/>
             </div>
           </div>
           <div className="row">
             <div className="col m6 offset-m3 center-align">
-              <ul id="pokemonList" className="pagination">
-                <li className="waves-effect"><a href="#!"><i className="material-icons">chevron_left</i></a></li>
-                <li className="waves-effect"><a href="#!"><i className="material-icons">chevron_right</i></a></li>
+              <ul className="pagination">
+                <li id="prevButton" className="waves-effect"><a href="#!"><i className="material-icons">chevron_left</i></a></li>
+                <li onClick={() => {this.loadPokemon(next)}} id="nextButton" className="waves-effect"><a href="#!"><i className="material-icons">chevron_right</i></a></li>
               </ul>
             </div>
           </div>
