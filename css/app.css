@@ -1,0 +1,30 @@
+@import url(../../node_modules/materialize-css/bin/materialize.css);
+*,
+*::before,
+*::after {
+  box-sizing: border-box; }
+
+img {
+  max-width: 100%; }
+
+#poke-img {
+  height: 192px; }
+
+#type-style {
+  height: 24px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline-block;
+  width: auto;
+  border-radius: 10px;
+  color: white; }
+
+#navbar-color {
+  background-color: #2B71B7 !important; }
+
+#rounded-border {
+  border-radius: 5px; }
+
+#header-logo {
+  height: 52px; }
+/*# sourceMappingURL=app.css.map */
