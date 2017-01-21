@@ -13,6 +13,29 @@ img {
   max-width: 100%;
 }
 
+#poke-img {
+  height: 192px;
+  //transform: scale(2);
+}
+
+#type-style {
+  height: 24px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline-block;;
+  width: auto;
+  border-radius: 10px;
+  color: white;
+}
+
+#navbar-color {
+  background-color: #2B71B7!important;
+}
+
 #rounded-border {
   border-radius: 5px;
+}
+
+#header-logo {
+  height: 52px;
 }

@@ -1,12 +1,17 @@
 var React = require('react');
+var $ = require('jquery');
+var $ = window.jQuery = require('jquery');
 
 var NavBar = React.createClass({
   render: function(){
     return (
-      <div className="navbar-fixed">
+      <div className="navbar-fixed ">
         <nav>
-          <div className="nav-wrapper">
-            <a href="#/" className="brand-logo center">Poke Library</a>
+          <div id="navbar-color" className="nav-wrapper blue lighten-5">
+            <a href="#/" className="brand-logo center"><img id="header-logo" src="./images/pokemon-logo.png" /></a>
+            <ul id="nav-mobile" className="right hide-on-med-and-down">
+              <li><a href="#poke-news/">PokeNews</a></li>
+            </ul>
           </div>
         </nav>
       </div>
