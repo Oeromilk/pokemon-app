@@ -30,13 +30,13 @@ var LandingContainer = React.createClass({
   getInitialState: function(){
     return {
       response: {},
-      url: 'http://pokeapi.co/api/v2/',
+      url: 'https://pokemon-proxy-server.herokuapp.com/pokemon',
       pokemon: []
     }
   },
   loadPokemon: function(newUrl){
     var self = this;
-    const url = `${this.state.url}pokemon/`;
+    const url = this.state.url;
     $('.progress').show();
     $('#loadButton').hide();
     if (newUrl){
@@ -57,7 +57,7 @@ var LandingContainer = React.createClass({
         self.setState({pokemon: response.results});
       });
     } else {
-      $.ajax(url).then(function(response){
+      $.getJSON(url).then(function(response){
         if(response){
           $('.progress').hide();
           $('#pokemonList').show();
