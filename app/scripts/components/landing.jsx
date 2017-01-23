@@ -58,6 +58,7 @@ var LandingContainer = React.createClass({
       });
     } else {
       $.getJSON(url).then(function(response){
+        console.log(response);
         if(response){
           $('.progress').hide();
           $('#pokemonList').show();
@@ -83,6 +84,7 @@ var LandingContainer = React.createClass({
     $('#pokemonList').hide();
   },
   render: function(){
+    var count = this.state.response.count;
     var next = this.state.response.next;
     return (
       <Template>

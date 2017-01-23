@@ -87,7 +87,8 @@ var PokemonDetail = React.createClass({
       pokeInfo: {},
       sprites: {},
       types: [],
-      stats: []
+      stats: [],
+      abilities: []
     }
   },
   changeImage: function(backUrl, frontUrl){
@@ -99,10 +100,12 @@ var PokemonDetail = React.createClass({
   componentWillMount: function(){
     var pokeUrl = this.props.pokemonInfo.url;
     $.ajax(pokeUrl).then(response => {
+      console.log('pokemon info', response);
       this.setState({pokeInfo: response});
       this.setState({sprites: response.sprites});
       this.setState({types: response.types});
       this.setState({stats: response.stats});
+      this.setState({abilities: response.abilities});
       if(response){
         $('.progress').hide();
       }
@@ -113,10 +116,21 @@ var PokemonDetail = React.createClass({
     var sprites = this.state.sprites;
     var types = this.state.types;
     var stats = this.state.stats;
+    var abilities = this.state.abilities;
+
+    var abilityListing = abilities.map(ability => {
+      console.log('ability', ability.ability.name);
+      return (
+        <div key={ability.ability.name}>
+          <div>Abilites</div>
+          <div>{ability.ability.name}</div>
+        </div>
+      )
+    });
 
     var statsListing = stats.map(stat => {
       return (
-        <div key={stat.base_stat}>
+        <div key={stat.stat.name}>
           <div>{stat.stat.name}</div>
           <div>{stat.base_stat}</div>
         </div>
@@ -126,13 +140,11 @@ var PokemonDetail = React.createClass({
 
     var typesLiting = types.map(type => {
       var color = typeColor.find(color => color.type === type.type.name);
-      console.log('color', color.color);
       return (
         <div id="type-style" style={{backgroundColor: color.color}} key={type.type.name}>{type.type.name}</div>
         )
     });
 
-    console.log('info', info);
     return (
       <div id="rounded-border" className="col m6 offset-m3 z-depth-2 center-align">
         <h3>PokeInfo</h3>
@@ -143,7 +155,7 @@ var PokemonDetail = React.createClass({
           <img id="poke-img" className="responsive-img" src={sprites.front_default} />
         </div>
         <div>
-          # {info.id} Name: {info.name} {typesLiting} {statsListing}
+          # {info.id} Name: {info.name} {typesLiting} {statsListing} {abilityListing}
         </div>
         <table className="highlight centered">
           <thead>
