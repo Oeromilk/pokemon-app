@@ -60,6 +60,7 @@ var LandingContainer = React.createClass({displayName: "LandingContainer",
       });
     } else {
       $.getJSON(url).then(function(response){
+        console.log(response);
         if(response){
           $('.progress').hide();
           $('#pokemonList').show();
@@ -85,6 +86,7 @@ var LandingContainer = React.createClass({displayName: "LandingContainer",
     $('#pokemonList').hide();
   },
   render: function(){
+    var count = this.state.response.count;
     var next = this.state.response.next;
     return (
       React.createElement(Template, null, 
@@ -213,7 +215,8 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
       pokeInfo: {},
       sprites: {},
       types: [],
-      stats: []
+      stats: [],
+      abilities: []
     }
   },
   changeImage: function(backUrl, frontUrl){
@@ -225,10 +228,12 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
   componentWillMount: function(){
     var pokeUrl = this.props.pokemonInfo.url;
     $.ajax(pokeUrl).then(response => {
+      console.log('pokemon info', response);
       this.setState({pokeInfo: response});
       this.setState({sprites: response.sprites});
       this.setState({types: response.types});
       this.setState({stats: response.stats});
+      this.setState({abilities: response.abilities});
       if(response){
         $('.progress').hide();
       }
@@ -239,10 +244,21 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
     var sprites = this.state.sprites;
     var types = this.state.types;
     var stats = this.state.stats;
+    var abilities = this.state.abilities;
+
+    var abilityListing = abilities.map(ability => {
+      console.log('ability', ability.ability.name);
+      return (
+        React.createElement("div", {key: ability.ability.name}, 
+          React.createElement("div", null, "Abilites"), 
+          React.createElement("div", null, ability.ability.name)
+        )
+      )
+    });
 
     var statsListing = stats.map(stat => {
       return (
-        React.createElement("div", {key: stat.base_stat}, 
+        React.createElement("div", {key: stat.stat.name}, 
           React.createElement("div", null, stat.stat.name), 
           React.createElement("div", null, stat.base_stat)
         )
@@ -252,13 +268,11 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
 
     var typesLiting = types.map(type => {
       var color = typeColor.find(color => color.type === type.type.name);
-      console.log('color', color.color);
       return (
         React.createElement("div", {id: "type-style", style: {backgroundColor: color.color}, key: type.type.name}, type.type.name)
         )
     });
 
-    console.log('info', info);
     return (
       React.createElement("div", {id: "rounded-border", className: "col m6 offset-m3 z-depth-2 center-align"}, 
         React.createElement("h3", null, "PokeInfo"), 
@@ -269,7 +283,7 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
           React.createElement("img", {id: "poke-img", className: "responsive-img", src: sprites.front_default})
         ), 
         React.createElement("div", null, 
-          "# ", info.id, " Name: ", info.name, " ", typesLiting, " ", statsListing
+          "# ", info.id, " Name: ", info.name, " ", typesLiting, " ", statsListing, " ", abilityListing
         ), 
         React.createElement("table", {className: "highlight centered"}, 
           React.createElement("thead", null, 
