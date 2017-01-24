@@ -17,7 +17,7 @@ var PokemonListing = React.createClass({displayName: "PokemonListing",
 
     var pokemonList = pokemon.map(pokemon => {
       return (
-        React.createElement("a", {onClick: () => {this.logInfo(pokemon)}, key: pokemon.name, href: `#pokemon/${pokemon.name}/`, className: "collection-item"}, pokemon.name)
+        React.createElement("a", {onClick: () => {this.logInfo(pokemon)}, key: pokemon.name, href: `#pokemon/${pokemon.name}/`, className: "collection-item  blue darken-4 white-text"}, pokemon.name)
       )
     });
     return (
@@ -36,48 +36,55 @@ var LandingContainer = React.createClass({displayName: "LandingContainer",
       pokemon: []
     }
   },
-  loadPokemon: function(newUrl){
+  prevPokemon: function(prev){
+    var self = this;
+    $('.progress').show();
+    $('#loadButton').hide();
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    $.ajax(prev).then(function(response){
+      if(response){
+        $('.progress').hide();
+        $('#pokemonList').show();
+        $('#prevButton').show();
+        $('#nextButton').show();
+      }
+      self.setState({response: response});
+      self.setState({pokemon: response.results});
+    });
+  },
+  nextPokemon: function(next){
+    var self = this;
+    $('.progress').show();
+    $('#loadButton').hide();
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    $.ajax(next).then(function(response){
+      if(response){
+        $('.progress').hide();
+        $('#pokemonList').show();
+        $('#prevButton').show();
+        $('#prevButton').removeClass('disabled');
+        $('#nextButton').show();
+      }
+      self.setState({response: response});
+      self.setState({pokemon: response.results});
+    });
+  },
+  loadPokemon: function(){
     var self = this;
     const url = this.state.url;
     $('.progress').show();
     $('#loadButton').hide();
-    if (newUrl){
-      $.ajax(newUrl).then(function(response){
-        if(response){
-          $('.progress').hide();
-          $('#pokemonList').show();
-          $('#prevButton').show();
-          $('#nextButton').show();
-        }
-        if (response.previous === null){
-          $('#prevButton').addClass('disabled');
-        }
-        if (response.next === null){
-          $('#nextButton').addClass('disabled');
-        }
-        self.setState({response: response});
-        self.setState({pokemon: response.results});
-      });
-    } else {
-      $.getJSON(url).then(function(response){
-        console.log(response);
-        if(response){
-          $('.progress').hide();
-          $('#pokemonList').show();
-          $('#prevButton').show();
-          $('#nextButton').show();
-        }
-        if (response.previous === null){
-          $('#prevButton').addClass('disabled');
-        }
-        if (response.next === null){
-          $('#nextButton').addClass('disabled');
-        }
-        self.setState({response: response});
-        self.setState({pokemon: response.results});
-      });
-    }
-
+    $.getJSON(url).then(function(response){
+      console.log(response);
+      if(response){
+        $('.progress').hide();
+        $('#pokemonList').show();
+        $('#prevButton').show();
+        $('#nextButton').show();
+      }
+      self.setState({response: response});
+      self.setState({pokemon: response.results});
+    });
   },
   componentDidMount: function(){
     $('#prevButton').hide();
@@ -88,18 +95,19 @@ var LandingContainer = React.createClass({displayName: "LandingContainer",
   render: function(){
     var count = this.state.response.count;
     var next = this.state.response.next;
+    var prev = this.state.response.previous;
     return (
       React.createElement(Template, null, 
         React.createElement("div", {className: "container"}, 
           React.createElement("div", {className: "row"}, 
-            React.createElement("div", {className: "col m6 offset-m3 center-align"}, 
+            React.createElement("div", {className: "col s12 m6 offset-m3 center-align"}, 
               React.createElement("h1", null, "Browse Pokemon"), 
               React.createElement("p", null, "Click the button below to load all Pokemon currently out.")
             )
           ), 
           React.createElement("div", {className: "row"}, 
-            React.createElement("div", {className: "col m6 offset-m3 center-align"}, 
-              React.createElement("a", {onClick: () => {this.loadPokemon()}, id: "loadButton", className: "waves-effect waves-light btn-large"}, "Pokemon"), 
+            React.createElement("div", {className: "col s12 m6 offset-m3 center-align"}, 
+              React.createElement("a", {onClick: () => {this.loadPokemon()}, id: "loadButton", className: "waves-effect blue waves-light btn-large"}, "Pokemon"), 
                 React.createElement("div", {className: "progress blue darken-4"}, 
                   React.createElement("div", {className: "indeterminate amber lighten-1"})
                 ), 
@@ -107,10 +115,10 @@ var LandingContainer = React.createClass({displayName: "LandingContainer",
             )
           ), 
           React.createElement("div", {className: "row"}, 
-            React.createElement("div", {className: "col m6 offset-m3 center-align"}, 
+            React.createElement("div", {className: "col s12 m6 offset-m3 center-align"}, 
               React.createElement("ul", {className: "pagination"}, 
-                React.createElement("li", {id: "prevButton", className: "waves-effect"}, React.createElement("a", {href: "#!"}, React.createElement("i", {className: "material-icons"}, "chevron_left"))), 
-                React.createElement("li", {onClick: () => {this.loadPokemon(next)}, id: "nextButton", className: "waves-effect"}, React.createElement("a", {href: "#!"}, React.createElement("i", {className: "material-icons"}, "chevron_right")))
+                React.createElement("li", {onClick: () => {this.prevPokemon(prev)}, id: "prevButton", className: "waves-effect"}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "material-icons"}, "chevron_left"))), 
+                React.createElement("li", {onClick: () => {this.nextPokemon(next)}, id: "nextButton", className: "waves-effect"}, React.createElement("a", {href: "#!"}, React.createElement("i", {className: "material-icons"}, "chevron_right")))
               )
             )
           )
@@ -130,6 +138,10 @@ module.exports = {
 var React = require('react');
 var $ = require('jquery');
 var _ = require('underscore');
+
+function firstChar(string){
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 var typeColor = [
   {
@@ -235,9 +247,13 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
       this.setState({stats: response.stats});
       this.setState({abilities: response.abilities});
       if(response){
+        $('.content').show();
         $('.progress').hide();
       }
     });
+  },
+  componentDidMount: function(){
+    $('.content').hide();
   },
   render: function(){
     var info = this.state.pokeInfo;
@@ -249,17 +265,16 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
     var abilityListing = abilities.map(ability => {
       console.log('ability', ability.ability.name);
       return (
-        React.createElement("div", {key: ability.ability.name}, 
-          React.createElement("div", null, "Abilites"), 
-          React.createElement("div", null, ability.ability.name)
+        React.createElement("div", {key: ability.ability.name, className: "capital ability-style z-depth-3"}, 
+          ability.ability.name
         )
       )
     });
 
     var statsListing = stats.map(stat => {
       return (
-        React.createElement("div", {key: stat.stat.name}, 
-          React.createElement("div", null, stat.stat.name), 
+        React.createElement("div", {key: stat.stat.name, className: "stat-style z-depth-3"}, 
+          React.createElement("div", {className: "capital"}, stat.stat.name), 
           React.createElement("div", null, stat.base_stat)
         )
 
@@ -269,34 +284,36 @@ var PokemonDetail = React.createClass({displayName: "PokemonDetail",
     var typesLiting = types.map(type => {
       var color = typeColor.find(color => color.type === type.type.name);
       return (
-        React.createElement("div", {id: "type-style", style: {backgroundColor: color.color}, key: type.type.name}, type.type.name)
+        React.createElement("div", {id: "type-style", className: "z-depth-3", style: {backgroundColor: color.color}, key: type.type.name}, type.type.name)
         )
     });
 
     return (
-      React.createElement("div", {id: "rounded-border", className: "col m6 offset-m3 z-depth-2 center-align"}, 
-        React.createElement("h3", null, "PokeInfo"), 
+      React.createElement("div", null, 
         React.createElement("div", {className: "progress blue darken-4"}, 
           React.createElement("div", {className: "indeterminate amber lighten-1"})
         ), 
-        React.createElement("div", {onMouseOver: () => {this.changeImage(sprites.back_default, sprites.front_default)}, className: "grey lighten-4"}, 
-          React.createElement("img", {id: "poke-img", className: "responsive-img", src: sprites.front_default})
-        ), 
-        React.createElement("div", null, 
-          "# ", info.id, " Name: ", info.name, " ", typesLiting, " ", statsListing, " ", abilityListing
-        ), 
-        React.createElement("table", {className: "highlight centered"}, 
-          React.createElement("thead", null, 
-            React.createElement("tr", null, 
-              React.createElement("th", null, "Height"), 
-              React.createElement("th", null, "Weight")
+        React.createElement("div", {id: "rounded-border", className: "col s12 m6 offset-m3 z-depth-2 center-align content"}, 
+          React.createElement("h3", null, "PokeInfo"), 
+          React.createElement("div", {onMouseOver: () => {this.changeImage(sprites.back_default, sprites.front_default)}, className: "grey lighten-4"}, 
+            React.createElement("img", {id: "poke-img", className: "responsive-img", src: sprites.front_default})
+          ), 
+          React.createElement("div", null, 
+            React.createElement("div", {className: "capital"}, info.name), 
+            React.createElement("div", {className: "capital"}, "# ", info.id), 
+            typesLiting, 
+            React.createElement("div", {className: "capital"}, 
+              "Height ", info.height, "m" + ' ' +
+              "Weight ", info.weight, "kg"
             )
           ), 
-          React.createElement("tbody", null, 
-            React.createElement("tr", null, 
-              React.createElement("td", null, info.height, "m"), 
-              React.createElement("td", null, info.weight, "kg")
-            )
+          React.createElement("div", null, 
+            React.createElement("h4", null, "Stats"), 
+            statsListing
+          ), 
+          React.createElement("div", null, 
+            React.createElement("h4", null, "Abilities"), 
+            abilityListing
           )
         )
       )
@@ -343,11 +360,7 @@ var Template = require('./templates/navbar.jsx').Template;
 var PokemonCollection = require('../models/pokemon.js').PokemonCollection;
 
 let articleUrl = 'https://newsapi.org/v1/articles?source=google-news&category=gaming&apiKey=0d61d302b1fe49c5b9d883305c5fe436';
-let sourceUrl = 'https://newsapi.org/v1/sources?catergory=gaming&apiKey=0d61d302b1fe49c5b9d883305c5fe436';
-
-$.ajax(articleUrl).then(response => {
-  console.log(response);
-});
+let sourceUrl = 'https://newsapi.org/v1/sources';
 
 var PokeNewsContainer = React.createClass({displayName: "PokeNewsContainer",
   render: function(){
