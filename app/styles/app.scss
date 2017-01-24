@@ -13,6 +13,30 @@ img {
   max-width: 100%;
 }
 
+.capital {
+  text-transform: capitalize;
+}
+
+.ability-style {
+  background-color: #78909c;
+  height: 24px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline-block;;
+  width: auto;
+  border-radius: 10px;
+  color: white;
+}
+
+.stat-style {
+  background-color: #66bb6a;
+  display: inline-block;
+  border: 1px solid #b0bec5;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+
 #poke-img {
   height: 192px;
   //transform: scale(2);
@@ -34,6 +58,7 @@ img {
 
 #rounded-border {
   border-radius: 5px;
+  padding-bottom: 10px;
 }
 
 #header-logo {

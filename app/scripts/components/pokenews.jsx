@@ -7,11 +7,7 @@ var Template = require('./templates/navbar.jsx').Template;
 var PokemonCollection = require('../models/pokemon.js').PokemonCollection;
 
 let articleUrl = 'https://newsapi.org/v1/articles?source=google-news&category=gaming&apiKey=0d61d302b1fe49c5b9d883305c5fe436';
-let sourceUrl = 'https://newsapi.org/v1/sources?catergory=gaming&apiKey=0d61d302b1fe49c5b9d883305c5fe436';
-
-$.ajax(articleUrl).then(response => {
-  console.log(response);
-});
+let sourceUrl = 'https://newsapi.org/v1/sources';
 
 var PokeNewsContainer = React.createClass({
   render: function(){

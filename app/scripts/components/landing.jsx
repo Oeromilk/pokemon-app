@@ -15,7 +15,7 @@ var PokemonListing = React.createClass({
 
     var pokemonList = pokemon.map(pokemon => {
       return (
-        <a onClick={() => {this.logInfo(pokemon)}} key={pokemon.name} href={`#pokemon/${pokemon.name}/`} className="collection-item">{pokemon.name}</a>
+        <a onClick={() => {this.logInfo(pokemon)}} key={pokemon.name} href={`#pokemon/${pokemon.name}/`} className="collection-item  blue darken-4 white-text">{pokemon.name}</a>
       )
     });
     return (
@@ -34,48 +34,55 @@ var LandingContainer = React.createClass({
       pokemon: []
     }
   },
-  loadPokemon: function(newUrl){
+  prevPokemon: function(prev){
+    var self = this;
+    $('.progress').show();
+    $('#loadButton').hide();
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    $.ajax(prev).then(function(response){
+      if(response){
+        $('.progress').hide();
+        $('#pokemonList').show();
+        $('#prevButton').show();
+        $('#nextButton').show();
+      }
+      self.setState({response: response});
+      self.setState({pokemon: response.results});
+    });
+  },
+  nextPokemon: function(next){
+    var self = this;
+    $('.progress').show();
+    $('#loadButton').hide();
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    $.ajax(next).then(function(response){
+      if(response){
+        $('.progress').hide();
+        $('#pokemonList').show();
+        $('#prevButton').show();
+        $('#prevButton').removeClass('disabled');
+        $('#nextButton').show();
+      }
+      self.setState({response: response});
+      self.setState({pokemon: response.results});
+    });
+  },
+  loadPokemon: function(){
     var self = this;
     const url = this.state.url;
     $('.progress').show();
     $('#loadButton').hide();
-    if (newUrl){
-      $.ajax(newUrl).then(function(response){
-        if(response){
-          $('.progress').hide();
-          $('#pokemonList').show();
-          $('#prevButton').show();
-          $('#nextButton').show();
-        }
-        if (response.previous === null){
-          $('#prevButton').addClass('disabled');
-        }
-        if (response.next === null){
-          $('#nextButton').addClass('disabled');
-        }
-        self.setState({response: response});
-        self.setState({pokemon: response.results});
-      });
-    } else {
-      $.getJSON(url).then(function(response){
-        console.log(response);
-        if(response){
-          $('.progress').hide();
-          $('#pokemonList').show();
-          $('#prevButton').show();
-          $('#nextButton').show();
-        }
-        if (response.previous === null){
-          $('#prevButton').addClass('disabled');
-        }
-        if (response.next === null){
-          $('#nextButton').addClass('disabled');
-        }
-        self.setState({response: response});
-        self.setState({pokemon: response.results});
-      });
-    }
-
+    $.getJSON(url).then(function(response){
+      console.log(response);
+      if(response){
+        $('.progress').hide();
+        $('#pokemonList').show();
+        $('#prevButton').show();
+        $('#nextButton').show();
+      }
+      self.setState({response: response});
+      self.setState({pokemon: response.results});
+    });
   },
   componentDidMount: function(){
     $('#prevButton').hide();
@@ -86,18 +93,19 @@ var LandingContainer = React.createClass({
   render: function(){
     var count = this.state.response.count;
     var next = this.state.response.next;
+    var prev = this.state.response.previous;
     return (
       <Template>
         <div className="container">
           <div className="row">
-            <div className="col m6 offset-m3 center-align">
+            <div className="col s12 m6 offset-m3 center-align">
               <h1>Browse Pokemon</h1>
               <p>Click the button below to load all Pokemon currently out.</p>
             </div>
           </div>
           <div className="row">
-            <div className="col m6 offset-m3 center-align">
-              <a onClick={() => {this.loadPokemon()}} id="loadButton" className="waves-effect waves-light btn-large">Pokemon</a>
+            <div className="col s12 m6 offset-m3 center-align">
+              <a onClick={() => {this.loadPokemon()}} id="loadButton" className="waves-effect blue waves-light btn-large">Pokemon</a>
                 <div className="progress blue darken-4">
                   <div className="indeterminate amber lighten-1"></div>
                 </div>
@@ -105,10 +113,10 @@ var LandingContainer = React.createClass({
             </div>
           </div>
           <div className="row">
-            <div className="col m6 offset-m3 center-align">
+            <div className="col s12 m6 offset-m3 center-align">
               <ul className="pagination">
-                <li id="prevButton" className="waves-effect"><a href="#!"><i className="material-icons">chevron_left</i></a></li>
-                <li onClick={() => {this.loadPokemon(next)}} id="nextButton" className="waves-effect"><a href="#!"><i className="material-icons">chevron_right</i></a></li>
+                <li onClick={() => {this.prevPokemon(prev)}} id="prevButton" className="waves-effect"><a href="#"><i className="material-icons">chevron_left</i></a></li>
+                <li onClick={() => {this.nextPokemon(next)}} id="nextButton" className="waves-effect"><a href="#!"><i className="material-icons">chevron_right</i></a></li>
               </ul>
             </div>
           </div>

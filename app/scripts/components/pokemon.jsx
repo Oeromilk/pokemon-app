@@ -3,6 +3,10 @@ var React = require('react');
 var $ = require('jquery');
 var _ = require('underscore');
 
+function firstChar(string){
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 var typeColor = [
   {
   'type': 'normal',
@@ -107,9 +111,13 @@ var PokemonDetail = React.createClass({
       this.setState({stats: response.stats});
       this.setState({abilities: response.abilities});
       if(response){
+        $('.content').show();
         $('.progress').hide();
       }
     });
+  },
+  componentDidMount: function(){
+    $('.content').hide();
   },
   render: function(){
     var info = this.state.pokeInfo;
@@ -121,17 +129,16 @@ var PokemonDetail = React.createClass({
     var abilityListing = abilities.map(ability => {
       console.log('ability', ability.ability.name);
       return (
-        <div key={ability.ability.name}>
-          <div>Abilites</div>
-          <div>{ability.ability.name}</div>
+        <div key={ability.ability.name} className="capital ability-style z-depth-3">
+          {ability.ability.name}
         </div>
       )
     });
 
     var statsListing = stats.map(stat => {
       return (
-        <div key={stat.stat.name}>
-          <div>{stat.stat.name}</div>
+        <div key={stat.stat.name} className="stat-style z-depth-3">
+          <div className="capital">{stat.stat.name}</div>
           <div>{stat.base_stat}</div>
         </div>
 
@@ -141,36 +148,38 @@ var PokemonDetail = React.createClass({
     var typesLiting = types.map(type => {
       var color = typeColor.find(color => color.type === type.type.name);
       return (
-        <div id="type-style" style={{backgroundColor: color.color}} key={type.type.name}>{type.type.name}</div>
+        <div id="type-style" className="z-depth-3" style={{backgroundColor: color.color}} key={type.type.name}>{type.type.name}</div>
         )
     });
 
     return (
-      <div id="rounded-border" className="col m6 offset-m3 z-depth-2 center-align">
-        <h3>PokeInfo</h3>
+      <div>
         <div className="progress blue darken-4">
           <div className="indeterminate amber lighten-1"></div>
         </div>
-        <div onMouseOver={() => {this.changeImage(sprites.back_default, sprites.front_default)}} className="grey lighten-4">
-          <img id="poke-img" className="responsive-img" src={sprites.front_default} />
+        <div id="rounded-border" className="col s12 m6 offset-m3 z-depth-2 center-align content">
+          <h3>PokeInfo</h3>
+          <div onMouseOver={() => {this.changeImage(sprites.back_default, sprites.front_default)}} className="grey lighten-4">
+            <img id="poke-img" className="responsive-img" src={sprites.front_default} />
+          </div>
+          <div>
+            <div className="capital">{info.name}</div>
+            <div className="capital"># {info.id}</div>
+            {typesLiting}
+            <div className="capital">
+              Height {info.height}m
+              Weight {info.weight}kg
+            </div>
+          </div>
+          <div>
+            <h4>Stats</h4>
+            {statsListing}
+          </div>
+          <div>
+            <h4>Abilities</h4>
+            {abilityListing}
+          </div>
         </div>
-        <div>
-          # {info.id} Name: {info.name} {typesLiting} {statsListing} {abilityListing}
-        </div>
-        <table className="highlight centered">
-          <thead>
-            <tr>
-              <th>Height</th>
-              <th>Weight</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{info.height}m</td>
-              <td>{info.weight}kg</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     )
   }
