@@ -10,7 +10,7 @@ var NavBar = React.createClass({
         <nav>
           <div id="navbar-color" className="nav-wrapper blue lighten-5">
             <a href="#/" className="brand-logo center"><img id="header-logo" src="./images/pokemon-logo.png" /></a>
-            <ul id="nav-mobile" className="right hide-on-med-and-down">
+            <ul id="nav-mobile" className="right">
               <li><a href="#poke-news/">PokeNews</a></li>
               <li><a href="#all-pokemon/">Pokemon List</a></li>
             </ul>
