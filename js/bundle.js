@@ -477,7 +477,7 @@ var NavBar = React.createClass({displayName: "NavBar",
         React.createElement("nav", null, 
           React.createElement("div", {id: "navbar-color", className: "nav-wrapper blue lighten-5"}, 
             React.createElement("a", {href: "#/", className: "brand-logo center"}, React.createElement("img", {id: "header-logo", src: "./images/pokemon-logo.png"})), 
-            React.createElement("ul", {id: "nav-mobile", className: "right hide-on-med-and-down"}, 
+            React.createElement("ul", {id: "nav-mobile", className: "right"}, 
               React.createElement("li", null, React.createElement("a", {href: "#poke-news/"}, "PokeNews")), 
               React.createElement("li", null, React.createElement("a", {href: "#all-pokemon/"}, "Pokemon List"))
             )
