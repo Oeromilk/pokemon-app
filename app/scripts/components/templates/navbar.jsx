@@ -2,6 +2,7 @@ var React = require('react');
 var $ = require('jquery');
 var $ = window.jQuery = require('jquery');
 
+
 var NavBar = React.createClass({
   render: function(){
     return (
@@ -11,6 +12,7 @@ var NavBar = React.createClass({
             <a href="#/" className="brand-logo center"><img id="header-logo" src="./images/pokemon-logo.png" /></a>
             <ul id="nav-mobile" className="right hide-on-med-and-down">
               <li><a href="#poke-news/">PokeNews</a></li>
+              <li><a href="#all-pokemon/">Pokemon List</a></li>
             </ul>
           </div>
         </nav>

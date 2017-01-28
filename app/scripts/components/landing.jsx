@@ -105,7 +105,7 @@ var LandingContainer = React.createClass({
           </div>
           <div className="row">
             <div className="col s12 m6 offset-m3 center-align">
-              <a onClick={() => {this.loadPokemon()}} id="loadButton" className="waves-effect blue waves-light btn-large">Pokemon</a>
+              <a onClick={() => {this.loadPokemon()}} id="loadButton" href="#pokemon/" className="waves-effect blue waves-light btn-large">Pokemon</a>
                 <div className="progress blue darken-4">
                   <div className="indeterminate amber lighten-1"></div>
                 </div>

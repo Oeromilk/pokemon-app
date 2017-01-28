@@ -148,7 +148,7 @@ var PokemonDetail = React.createClass({
     var typesLiting = types.map(type => {
       var color = typeColor.find(color => color.type === type.type.name);
       return (
-        <div id="type-style" className="z-depth-3" style={{backgroundColor: color.color}} key={type.type.name}>{type.type.name}</div>
+        <div id="type-style" className="z-depth-3 capital" style={{backgroundColor: color.color}} key={type.type.name}>{type.type.name}</div>
         )
     });
 
@@ -165,11 +165,11 @@ var PokemonDetail = React.createClass({
           <div>
             <div className="capital">{info.name}</div>
             <div className="capital"># {info.id}</div>
-            {typesLiting}
             <div className="capital">
               Height {info.height}m
               Weight {info.weight}kg
             </div>
+            {typesLiting}
           </div>
           <div>
             <h4>Stats</h4>

@@ -7,12 +7,15 @@ var ReactDom = require('react-dom');
 var LandingContainer = require('./components/landing.jsx').LandingContainer;
 var PokemonContainer = require('./components/pokemon.jsx').PokemonContainer;
 var PokeNewsContainer = require('./components/pokenews.jsx').PokeNewsContainer;
+var AllPokemonContainer = require('./components/allpokemon.jsx').AllPokemonContainer;
 
 var AppRouter = Backbone.Router.extend({
   routes: {
     '': 'index',
     'poke-news/': 'pokenews',
-    'pokemon/:pokemonId/': 'pokemon'
+    'pokemon/': 'pokemon',
+    'all-pokemon/': 'allPokemon',
+    'pokemon/:pokemonId/': 'pokemonId'
   },
   index: function(pokemonId){
     ReactDom.render(
@@ -26,7 +29,19 @@ var AppRouter = Backbone.Router.extend({
       document.getElementById('app')
     );
   },
-  pokemon: function(){
+  pokemon: function(pokemonId){
+    ReactDom.render(
+      React.createElement(LandingContainer, {router: this, pokemonId: pokemonId}),
+      document.getElementById('app')
+    );
+  },
+  allPokemon: function(){
+    ReactDom.render(
+      React.createElement(AllPokemonContainer, {router: this}),
+      document.getElementById('app')
+    );
+  },
+  pokemonId: function(){
     ReactDom.render(
       React.createElement(PokemonContainer),
       document.getElementById('app')

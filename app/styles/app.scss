@@ -17,6 +17,20 @@ img {
   text-transform: capitalize;
 }
 
+.input-style {
+  border: 1px solid #b0bec5;
+  border-radius: 5px;
+}
+
+.all-pokemon-style {
+  height: 48px;
+  background-color: #2B71B7;
+  color: #FFCB05;
+  padding-top: 5px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
 .ability-style {
   background-color: #78909c;
   height: 24px;
