@@ -6518,6 +6518,7 @@ img {
   border-radius: 5px; }
 
 .all-pokemon-style {
+  cursor: pointer;
   height: 48px;
   background-color: #2B71B7;
   color: #FFCB05;
@@ -6564,4 +6565,5 @@ img {
 
 #header-logo {
   height: 52px; }
+
 /*# sourceMappingURL=app.css.map */
