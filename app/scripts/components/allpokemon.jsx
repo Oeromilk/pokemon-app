@@ -51,7 +51,7 @@ var AllPokemonContainer = React.createClass({
       return (
         <div id="pokemon-input" onClick={() => {this.logInfo(pokemon)}} className="col m4 offset-m4 center-align capital all-pokemon-style hoverable" key={pokemon.name}>{pokemon.name}</div>
       )
-    })
+    });
     return (
       <Template>
         <div className="row">

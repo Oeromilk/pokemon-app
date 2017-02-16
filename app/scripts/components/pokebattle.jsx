@@ -3,13 +3,13 @@ var React = require('react');
 var $ = require('jquery');
 var _ = require('underscore');
 
+var typeInfo = require('../utilities/effectiveness.js').typeInfo;
+
 var Template = require('./templates/navbar.jsx').Template;
 
 function getRandomPokemon(){
   return Math.floor(Math.random() * 811);
-}
-
-//var randomPokemon = Math.floor(Math.random() * 811);
+};
 
 function findMatches(word, pokemon){
   return pokemon.filter(pokemon => {
@@ -25,13 +25,23 @@ var PokeBattleContainer = React.createClass({
       pokemon: [],
       filteredPokemon: [],
       inputValue: '',
-      pickedPokemon: {}
+      pickedPokemon: {},
+      playerPokemon: {}
     }
   },
-  handleInput: function(e){
-
+  componentWillMount: function(){
+    // $('#pokemon-input').prop('disabled', true);
+    $.ajax('http://pokeapi.co/api/v2/pokemon/?limit=811').then(response => {
+      this.setState({pokemon: response.results});
+      // if (response) {
+      //   $('.progress').hide();
+      //   $('#pokemon-input').prop('disabled', false);
+      // };
+    });
   },
-  render: function(){
+  componentDidMount: function(){
+    $('.progress').hide();
+    $('.player-pokemon').hide();
     var self = this;
     var url = this.state.url;
     var randomPokemon = getRandomPokemon();
@@ -39,11 +49,63 @@ var PokeBattleContainer = React.createClass({
     $.ajax(randomUrl).then(function(response){
       self.setState({pickedPokemon: response});
     });
+  },
+  handleInput: function(e){
+    e.preventDefault();
+    var value = e.target.value;
+    var stateArr = this.state.pokemon;
+    this.setState({inputValue: value});
 
-    console.log(this.state.pickedPokemon);
+    var newStateArr = findMatches(value, stateArr);
+    this.setState({filteredPokemon: newStateArr});
+  },
+  showPokemon: function(pokemon){
+    var self = this;
+    $('.poke-listing').hide();
+    $('.progress').show();
+    $.ajax(pokemon.url).then(function(response){
+      self.setState({playerPokemon: response});
+      if(response){
+        $('.progress').hide();
+        $('.player-pokemon').show();
+      }
+    });
+  },
+  render: function(){
+    var pPokemon = this.state.playerPokemon;
+    var rPokemon = this.state.pickedPokemon;
+    var fPokemon = this.state.filteredPokemon;
+    var fPokemonListing = fPokemon.map(pokemon => {
+      return (
+        <li onClick={() => {this.showPokemon(pokemon)}} className="collection-item" key={pokemon.name}>{pokemon.name}</li>
+      )
+    });
     return (
       <Template>
-        test
+        <div className="row">
+          <div className="col m4 offset-m4 center-align">
+            <h3>Poke Battle</h3>
+            <p>Select a pokemon below to fight against your random encountered pokemon</p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col m4 offset-m2 z-depth-2 input-style">
+            <div className="player-pokemon">
+              {pPokemon.name}
+              <button className="btn waves-effect waves-light btn-large blue darken-4">Attack</button>
+            </div>
+            <div className="progress blue darken-4">
+              <div className="indeterminate amber lighten-1"></div>
+            </div>
+            <input onChange={this.handleInput} className="poke-listing" type="text" placeholder="Pokemon Name" value={this.state.inputValue} />
+              <ul className="collection poke-listing">
+                {fPokemonListing}
+              </ul>
+          </div>
+          <div className="col m4 offset-m1">
+            {rPokemon.name}
+          </div>
+        </div>
       </Template>
     )
   }

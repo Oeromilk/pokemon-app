@@ -13,6 +13,7 @@ var NavBar = React.createClass({
             <ul id="nav-mobile" className="right">
               <li><a href="#poke-news/">PokeNews</a></li>
               <li><a href="#all-pokemon/">Pokemon List</a></li>
+              <li><a href="#poke-battle/">Poke Battle</a></li>
             </ul>
           </div>
         </nav>
