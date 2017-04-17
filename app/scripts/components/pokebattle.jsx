@@ -31,16 +31,16 @@ var PokeBattleContainer = React.createClass({
   },
   componentWillMount: function(){
     // $('#pokemon-input').prop('disabled', true);
+    $('.progress-ppoke').show();
     $.ajax('http://pokeapi.co/api/v2/pokemon/?limit=811').then(response => {
       this.setState({pokemon: response.results});
-      // if (response) {
-      //   $('.progress').hide();
-      //   $('#pokemon-input').prop('disabled', false);
-      // };
+      if (response) {
+        $('.progress-ppoke').hide();
+      };
     });
   },
   componentDidMount: function(){
-    $('.progress').hide();
+    $('.progress-rpoke').show();
     $('.player-pokemon').hide();
     var self = this;
     var url = this.state.url;
@@ -48,6 +48,9 @@ var PokeBattleContainer = React.createClass({
     var randomUrl = url + randomPokemon.toString() + '/';
     $.ajax(randomUrl).then(function(response){
       self.setState({pickedPokemon: response});
+      if (response) {
+        $('.progress-rpoke').hide();
+      }
     });
   },
   handleInput: function(e){
@@ -62,14 +65,17 @@ var PokeBattleContainer = React.createClass({
   showPokemon: function(pokemon){
     var self = this;
     $('.poke-listing').hide();
-    $('.progress').show();
+    $('.progress-ppoke').show();
     $.ajax(pokemon.url).then(function(response){
       self.setState({playerPokemon: response});
       if(response){
-        $('.progress').hide();
+        $('.progress-ppoke').hide();
         $('.player-pokemon').show();
       }
     });
+  },
+  attackPokemon: function(){
+    console.log('attack');
   },
   render: function(){
     var pPokemon = this.state.playerPokemon;
@@ -92,9 +98,9 @@ var PokeBattleContainer = React.createClass({
           <div className="col m4 offset-m2 z-depth-2 input-style">
             <div className="player-pokemon">
               {pPokemon.name}
-              <button className="btn waves-effect waves-light btn-large blue darken-4">Attack</button>
+              <button onClick={this.attackPokemon} className="btn waves-effect waves-light blue darken-4">Attack</button>
             </div>
-            <div className="progress blue darken-4">
+            <div className="progress progress-ppoke blue darken-4">
               <div className="indeterminate amber lighten-1"></div>
             </div>
             <input onChange={this.handleInput} className="poke-listing" type="text" placeholder="Pokemon Name" value={this.state.inputValue} />
@@ -103,6 +109,9 @@ var PokeBattleContainer = React.createClass({
               </ul>
           </div>
           <div className="col m4 offset-m1">
+            <div className="progress progress-rpoke blue darken-4">
+              <div className="indeterminate amber lighten-1"></div>
+            </div>
             {rPokemon.name}
           </div>
         </div>
