@@ -23,7 +23,7 @@ var AllPokemonContainer = React.createClass({
   componentWillMount: function(){
     $('.progress').show();
     $('#pokemon-input').prop('disabled', true);
-    $.ajax('http://pokeapi.co/api/v2/pokemon/?limit=811').then(response => {
+    $.ajax('https://pokeapi.co/api/v2/pokemon/?limit=811').then(response => {
       this.setState({pokemon: response.results});
       if (response) {
         $('.progress').hide();

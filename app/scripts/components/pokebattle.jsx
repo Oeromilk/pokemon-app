@@ -6,6 +6,7 @@ var _ = require('underscore');
 var typeInfo = require('../utilities/effectiveness.js').typeInfo;
 
 var Template = require('./templates/navbar.jsx').Template;
+var BattleScene = require('./battlescene.jsx').BattleSceneContainer;
 
 function getRandomPokemon(){
   return Math.floor(Math.random() * 811);
@@ -21,7 +22,7 @@ function findMatches(word, pokemon){
 var PokeBattleContainer = React.createClass({
   getInitialState: function(){
     return {
-      url: 'http://pokeapi.co/api/v2/pokemon/',
+      url: 'https://pokeapi.co/api/v2/pokemon/',
       pokemon: [],
       filteredPokemon: [],
       inputValue: '',
@@ -32,7 +33,7 @@ var PokeBattleContainer = React.createClass({
   componentWillMount: function(){
     // $('#pokemon-input').prop('disabled', true);
     $('.progress-ppoke').show();
-    $.ajax('http://pokeapi.co/api/v2/pokemon/?limit=811').then(response => {
+    $.ajax('https://pokeapi.co/api/v2/pokemon/?limit=811').then(response => {
       this.setState({pokemon: response.results});
       if (response) {
         $('.progress-ppoke').hide();
@@ -58,7 +59,6 @@ var PokeBattleContainer = React.createClass({
     var value = e.target.value;
     var stateArr = this.state.pokemon;
     this.setState({inputValue: value});
-
     var newStateArr = findMatches(value, stateArr);
     this.setState({filteredPokemon: newStateArr});
   },
@@ -71,11 +71,33 @@ var PokeBattleContainer = React.createClass({
       if(response){
         $('.progress-ppoke').hide();
         $('.player-pokemon').show();
+        self.showStats()
       }
     });
   },
   attackPokemon: function(){
-    console.log('attack');
+    var playerPokemon = this.state.playerPokemon;
+    var opponent = this.state.pickedPokemon;
+    var pPokemonTypes = playerPokemon.types.map(type => {
+      return type.type.name;
+    });
+    var opponentStats = opponent.stats.map(stat => {
+      console.log(stat.stat.name, stat.base_stat);
+    })
+    playerPokemon.stats.map(stat => {
+      //console.log(stat.stat.name, stat.base_stat);
+    });
+    for(var i = 0; i < typeInfo.length; i++){
+     if(pPokemonTypes.includes(typeInfo[i].type)){
+       // console.log(
+       //   "type", typeInfo[i].type,
+       //   "dbl too", typeInfo[i].dblDmgTo,
+       //   "hlf too", typeInfo[i].hlfDmgTo,
+       //   "dbl from", typeInfo[i].dblDmgFrom,
+       //   "hlf from", typeInfo[i].hlfDmgFrom
+       //   );
+     }
+    }
   },
   render: function(){
     var pPokemon = this.state.playerPokemon;
@@ -93,6 +115,7 @@ var PokeBattleContainer = React.createClass({
             <h3>Poke Battle</h3>
             <p>Select a pokemon below to fight against your random encountered pokemon</p>
           </div>
+          <BattleScene pokemon={this.state.playerPokemon} opponent={this.state.pickedPokemon}/>
         </div>
         <div className="row">
           <div className="col m4 offset-m2 z-depth-2 input-style">
